@@ -1,0 +1,83 @@
+Upon examining more examples of the red-eye effect from pictures online, there
+seems to be a common occurrence. Either the pupil (inner circle) or the iris (the
+outer circle) is completely red.
+
+If we assume that both the iris and pupil are typically circles, then perhaps we
+can apply the following assumption:
+
+If we order the number of pixels in a circle from left to right and up to down,
+then the center pixel is the total number of pixels divided by 2, plus 1,
+and rounded down if needed.
+
+For example, a circle with
+
+[ ][ ][ ][ ][ ][ ][ ][ ][ ]
+[ ][ ][ ][*][*][*][ ][ ][ ]
+[ ][ ][*][*][*][*][*][ ][ ]
+[ ][*][*][*][*][*][*][*][ ]
+[ ][*][*][*][*][*][*][*][ ]
+[ ][*][*][*][*][*][*][*][ ]
+[ ][ ][*][*][*][*][*][ ][ ]
+[ ][ ][ ][*][*][*][ ][ ][ ]
+[ ][ ][ ][ ][ ][ ][ ][ ][ ]
+
+(which is actually the red outer circle in the assignment), can have its pixels
+numbered:
+
+[  ][  ][  ][  ][  ][  ][  ][  ][  ]
+[  ][  ][  ][ 1][ 2][ 3][  ][  ][  ]
+[  ][  ][ 4][ 5][ 6][ 7][ 8][  ][  ]
+[  ][ 9][10][11][12][13][14][15][  ]
+[  ][16][17][18][19][20][21][22][  ]
+[  ][22][23][24][25][26][27][28][  ]
+[  ][  ][29][30][31][32][33][  ][  ]
+[  ][  ][  ][34][35][36][  ][  ][  ]
+[  ][  ][  ][  ][  ][  ][  ][  ][  ]
+
+According to our assumption, the center pixel will be the total number of pixels (=36)
+divided by 2 (=18), plus 1 (=19), and rounded down if needed (=19).
+
+And as we can see with this hard-to-see diagram, the center pixel is indeed 19.
+Then, we can develop the following pseudocode.
+
+Assuming we have an 2D ARRAY with an equal number of pixels in length and width,
+with pixels of white (ignored), red, or black.
+
+Pseudocode:
+-------------------------------------------------------------------------------
+
+getMiddlePixel(ARRAY, COLOROPTIONS):
+    COLORCOUNT = 0
+
+    loop PIXELROW in ARRAY
+        loop PIXEL in PIXELROW
+            loop COLOR in COLOROPTIONS
+                if PIXEL = COLOR then
+                    COLORCOUNT = COLORCOUNT + 1
+            end loop
+        end loop
+    end loop
+
+    MIDDLEPIXELNUMBER = (COLORCOUNT/2)+1
+
+    loop PIXELROW in ARRAY
+        loop PIXEL in PIXELROW
+            loop COLOR in COLOROPTIONS
+                if PIXEL = COLOR then
+                    MIDDLEPIXELNUMBER = MIDDLEPIXELNUMBER - 1
+            end loop
+
+            if MIDDLEPIXELNUMBER = 0 then
+                return PIXEL
+        end loop
+    end loop
+
+middlePixelsAreAligned(ARRAY, INNERCIRCLEOPTIONS, OUTERCIRCLEOPTIONS):
+    if getMiddlePixel(ARRAY, INNERCIRCLEOPTIONS) = (getMiddlePixel(ARRAY, OUTERCIRCLEOPTIONS) then
+        return True
+    else
+        return False
+
+output middlePixelsAreAligned(ARRAY, INNERCIRCLEOPTIONS, OUTERCIRCLEOPTIONS)
+
+-------------------------------------------------------------------------------
